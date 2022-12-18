@@ -101,12 +101,6 @@ public class Client {
 				System.out.print("\nEnter 1 to calculate again or any other integer to exit: ");
 				flag = scanner.nextInt();
 				System.out.println();
-				
-				if(flag == 2) {
-					ds.receive(dpReciver);
-					System.out.println(new String(dpReciver.getData(),0,dpReciver.getLength()));
-					}
-				
 				}
 				ds.close();
 		}catch(IOException e) {

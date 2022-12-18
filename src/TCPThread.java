@@ -1,17 +1,15 @@
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class TCPThread extends Thread{
     private Socket socket;
-    private ServerSocket server_socket;
     Calculator calc;
     
-    TCPThread(ServerSocket server_sock, Socket sock) {
+    TCPThread(Socket sock) {
         this.socket = sock;
-        this.server_socket = server_sock;
         calc = new Calculator();
     }
 
@@ -37,11 +35,13 @@ public class TCPThread extends Thread{
                 
                 flag = in.readInt();
                 if(flag == 2) {
-                    System.out.println("Server has been killed");
+                    System.out.println("Connection with client has been terminated");
                     out.writeUTF("Connection has been terminated");
                 }
             }
-            this.server_socket.close();
+            try{
+                this.socket.close();
+            }catch(SocketException e){}
 
         } catch(IOException e) {
             System.out.println(e);
