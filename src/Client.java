@@ -9,7 +9,7 @@ public class Client {
 	public static void main(String[] args) {
 		Scanner scanner = new Scanner(System.in);
 		
-		System.out.print("enter 1 for tcp and 2 for udp : ");
+		System.out.print("Enter 1 for TCP and 2 for UDP : ");
 		int choose = scanner.nextInt();
 		
 		if(choose == 1) {
@@ -26,26 +26,26 @@ public class Client {
 				int flag = 1;
 				while(flag == 1) {
 					
-					System.out.print("enter num1 : ");
+					System.out.print("Enter num1: ");
 					Float num1 = scanner.nextFloat();
 					out.writeFloat(num1);
 					System.out.println();
 					
-					System.out.print("enter operation + - / ^ * : ");
+					System.out.print("Enter operation + - / ^ * : ");
 					char op = scanner.next().charAt(0);
 					out.writeChar(op);
 					System.out.println();
 					
-					System.out.print("enter num2 : ");
+					System.out.print("Enter num2: ");
 					Float num2 = scanner.nextFloat();
 					out.writeFloat(num2);
 					System.out.println();
 					
 					String result = in.readUTF();
-					System.out.println("server replied : "+result);
+					System.out.println("Server replied: "+result);
 					System.out.println();
 					
-					System.out.print("enter 1 to calculate again and 2 to exit : ");
+					System.out.print("Enter 1 to calculate again or any other integer to exit: ");
 					flag = scanner.nextInt();
 					out.writeInt(flag);
 					if(flag == 2) {
@@ -62,7 +62,8 @@ public class Client {
 		else if (choose == 2) {
 			int flag = 1;
 			try {
-				DatagramSocket ds = new DatagramSocket(3332);
+				System.out.print("Port: ");
+				DatagramSocket ds = new DatagramSocket(scanner.nextInt());
 				InetAddress ip = InetAddress.getByName("127.0.0.1");
 				byte[] buffer = new byte[2056];
 				DatagramPacket dpSender = new DatagramPacket(buffer, 0, ip, 3331);		
@@ -72,21 +73,21 @@ public class Client {
 				while(flag == 1) {
 					
 				System.out.println();	
-				System.out.print("enter num1 : ");
+				System.out.print("Enter num1: ");
 				String num1 = scanner.next();
 				System.out.println();
 				dpSender.setData(num1.getBytes());
 				dpSender.setLength(num1.length());
 				ds.send(dpSender);
 				
-				System.out.print("enter operation + - / ^ * :");
+				System.out.print("Enter operation + - / ^ * : ");
 				String op = scanner.next();
 				System.out.println();
 				dpSender.setData(op.getBytes());
 				dpSender.setLength(op.length());
 				ds.send(dpSender);
 				
-				System.out.print("enter num2 : ");
+				System.out.print("Enter num2: ");
 				String num2 = scanner.next();
 				System.out.println();
 				dpSender.setData(num2.getBytes());
@@ -94,15 +95,12 @@ public class Client {
 				ds.send(dpSender);
 				
 				ds.receive(dpReciver);
-				System.out.println("server replied : "+new String(dpReciver.getData(),0,dpReciver.getLength()));
+				System.out.println("Server replied: "+new String(dpReciver.getData(),0,dpReciver.getLength()));
 				
 				
-				System.out.print("\nenter 1 to calculate again and 2 to exit : ");
+				System.out.print("\nEnter 1 to calculate again or any other integer to exit: ");
 				flag = scanner.nextInt();
 				System.out.println();
-				dpSender.setData((Integer.toString(flag)).getBytes());
-				dpSender.setLength((Integer.toString(flag)).length());
-				ds.send(dpSender);
 				
 				if(flag == 2) {
 					ds.receive(dpReciver);
