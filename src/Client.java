@@ -131,6 +131,7 @@ public class Client {
 						System.out.println("Server: "+new String(dpReciver.getData(),0,dpReciver.getLength()));
 					}
 					System.out.println();
+
 				}
 				ds.close();
 			} catch(IOException e) {

@@ -29,7 +29,7 @@ public class Server {
 				ServerSocket soc = new ServerSocket(3333);
 				while (true) {
 					Socket sock = soc.accept();
-					TCPThread thread = new TCPThread(soc, sock);
+					TCPThread thread = new TCPThread(sock);
 					thread.start();
 				}
 

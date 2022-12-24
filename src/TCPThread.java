@@ -1,19 +1,16 @@
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 
 public class TCPThread extends Thread{
     private Socket socket;
-    private ServerSocket server_socket;
     Calculator calc;
     HashMap<String, String> responses;
     
-    TCPThread(ServerSocket server_sock, Socket sock) {
+    TCPThread(Socket sock) {
         this.socket = sock;
-        this.server_socket = server_sock;
         calc = new Calculator();
 		responses = new HashMap<>();
 		responses.put("Hi", "Hi");
