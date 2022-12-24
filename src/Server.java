@@ -51,7 +51,7 @@ public class Server {
 				while (true) {
 					ds.receive(dpReciver);
 					int port = dpReciver.getPort();
-					String message = new String(dpReciver.getData(),0,dpReciver.getLength());
+					String message = new String(dpReciver.getData(),0,dpReciver.getLength()); System.out.println(message);
 					if (message.equals("!e")) eq = true;
 					else if (eq) {
 						if (!port_data.containsKey(port)) {
