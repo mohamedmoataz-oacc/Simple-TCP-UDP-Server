@@ -13,6 +13,13 @@ import java.util.Scanner;
 public class Server {
 	public static void main(String[] args) {
 		Scanner scanner = new Scanner(System.in);
+		HashMap<String, String> responses = new HashMap<>();
+		responses.put("Hi", "Hi");
+		responses.put("Hello", "Hi");
+		responses.put("How are you?", "I'm fine, what about you?");
+		responses.put("Are you ok?", "Yes, I am. Thank you for asking.");
+		responses.put("Are you still running?", "Yes, sir!");
+		responses.put("Can you calculate something for me?", "Sure! Send it anytime!");
 		
 		System.out.print("enter 1 for tcp and 2 for udp : ");
 		int choose = scanner.nextInt();
@@ -39,30 +46,49 @@ public class Server {
 
 				HashMap<Integer, List<String>> port_data = new HashMap<>();
 				Calculator calc = new Calculator();
+				boolean eq = false;
 
 				while (true) {
 					ds.receive(dpReciver);
 					int port = dpReciver.getPort();
-					if (!port_data.containsKey(port)) {
-						port_data.put(port, new ArrayList<>());
-					}
-					port_data.get(port).add(new String(dpReciver.getData(),0,dpReciver.getLength()));
-					
-					List<String> list = port_data.get(port);
-					// System.out.println(list);
-					if (list.size() == 3) {
-						Float num1 = Float.parseFloat(list.get(0));
-						char op = list.get(1).charAt(0);
-						Float num2 = Float.parseFloat(list.get(2));
+					String message = new String(dpReciver.getData(),0,dpReciver.getLength());
+					if (message.equals("!e")) eq = true;
+					else if (eq) {
+						if (!port_data.containsKey(port)) {
+							port_data.put(port, new ArrayList<>());
+						}
+						port_data.get(port).add(message);
+						
+						List<String> list = port_data.get(port);
+						// System.out.println(list);
+						if (list.size() == 3) {
+							Float num1 = Float.parseFloat(list.get(0));
+							char op = list.get(1).charAt(0);
+							Float num2 = Float.parseFloat(list.get(2));
+							try {
+								DatagramPacket dpSender = new DatagramPacket(buffer, 0, ip, port);
+								dpSender.setData((num1+" "+Character.toString(op)+" "+num2+" = "+ calc.calculate(num1,num2,op)).getBytes());
+								dpSender.setLength((num1+" "+Character.toString(op)+" "+num2+" = "+ calc.calculate(num1,num2,op)).length());
+								ds.send(dpSender);
+							} catch (SocketException e) {
+								System.out.println(e);
+							}
+							port_data.remove(port);
+							eq = false;
+						}
+					} else {
 						try {
+							String response = responses.get(message);
+							if (response == null) {
+								response = "Oh, I do not find a response to your message in my responses list. Sorry for that :)";
+							}
 							DatagramPacket dpSender = new DatagramPacket(buffer, 0, ip, port);
-							dpSender.setData((num1+" "+Character.toString(op)+" "+num2+" = "+ calc.calculate(num1,num2,op)).getBytes());
-							dpSender.setLength((num1+" "+Character.toString(op)+" "+num2+" = "+ calc.calculate(num1,num2,op)).length());
+							dpSender.setData(response.getBytes());
+							dpSender.setLength(response.length());
 							ds.send(dpSender);
 						} catch (SocketException e) {
 							System.out.println(e);
 						}
-						port_data.remove(port);
 					}
 
 				}

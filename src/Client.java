@@ -25,29 +25,44 @@ public class Client {
 				
 				int flag = 1;
 				while(flag == 1) {
+					System.out.print("Enter a message: ");
+					String message = scanner.nextLine();
 					
-					System.out.print("Enter num1: ");
-					Float num1 = scanner.nextFloat();
-					out.writeFloat(num1);
-					System.out.println();
+					if (message.equals("!e")) {
+						out.writeUTF(message);
+						System.out.println();
+
+						System.out.print("Enter num1: ");
+						Float num1 = scanner.nextFloat();
+						out.writeFloat(num1);
+						System.out.println();
+						
+						System.out.print("Enter operation + - / ^ * : ");
+						char op = scanner.next().charAt(0);
+						out.writeChar(op);
+						System.out.println();
+						
+						System.out.print("Enter num2: ");
+						Float num2 = scanner.nextFloat();
+						out.writeFloat(num2);
+						System.out.println();
+
+						String result = in.readUTF();
+						System.out.println("Server: " + result);
+						System.out.println();
+						scanner.nextLine();
+					} else if (message.equals("!q")) {
+						flag = 2;
+						out.writeUTF("!q");
+					} else {
+						out.writeUTF(message);
+						System.out.println();
+						String result = in.readUTF();
+						System.out.println("Server: " + result);
+						System.out.println();
+					}
 					
-					System.out.print("Enter operation + - / ^ * : ");
-					char op = scanner.next().charAt(0);
-					out.writeChar(op);
-					System.out.println();
 					
-					System.out.print("Enter num2: ");
-					Float num2 = scanner.nextFloat();
-					out.writeFloat(num2);
-					System.out.println();
-					
-					String result = in.readUTF();
-					System.out.println("Server replied: "+result);
-					System.out.println();
-					
-					System.out.print("Enter 1 to calculate again or any other integer to exit: ");
-					flag = scanner.nextInt();
-					out.writeInt(flag);
 					if(flag == 2) {
 						System.out.println();
 						System.out.println(in.readUTF());
@@ -71,48 +86,57 @@ public class Client {
 				
 				
 				while(flag == 1) {
+					System.out.print("Enter a message: ");
+					String message = scanner.nextLine();
 					
-				System.out.println();	
-				System.out.print("Enter num1: ");
-				String num1 = scanner.next();
-				System.out.println();
-				dpSender.setData(num1.getBytes());
-				dpSender.setLength(num1.length());
-				ds.send(dpSender);
-				
-				System.out.print("Enter operation + - / ^ * : ");
-				String op = scanner.next();
-				System.out.println();
-				dpSender.setData(op.getBytes());
-				dpSender.setLength(op.length());
-				ds.send(dpSender);
-				
-				System.out.print("Enter num2: ");
-				String num2 = scanner.next();
-				System.out.println();
-				dpSender.setData(num2.getBytes());
-				dpSender.setLength(num2.length());
-				ds.send(dpSender);
-				
-				ds.receive(dpReciver);
-				System.out.println("Server replied: "+new String(dpReciver.getData(),0,dpReciver.getLength()));
-				
-				
-				System.out.print("\nEnter 1 to calculate again or any other integer to exit: ");
-				flag = scanner.nextInt();
-				System.out.println();
-				
-				if(flag == 2) {
-					ds.receive(dpReciver);
-					System.out.println(new String(dpReciver.getData(),0,dpReciver.getLength()));
+					if (message.equals("!e")) {
+						dpSender.setData(message.getBytes());
+						dpSender.setLength(message.length());
+						ds.send(dpSender);
+						System.out.println();
+
+						System.out.print("Enter num1: ");
+						String num1 = scanner.next();
+						System.out.println();
+						dpSender.setData(num1.getBytes());
+						dpSender.setLength(num1.length());
+						ds.send(dpSender);
+						
+						System.out.print("Enter operation + - / ^ * : ");
+						String op = scanner.next();
+						System.out.println();
+						dpSender.setData(op.getBytes());
+						dpSender.setLength(op.length());
+						ds.send(dpSender);
+						
+						System.out.print("Enter num2: ");
+						String num2 = scanner.next();
+						System.out.println();
+						dpSender.setData(num2.getBytes());
+						dpSender.setLength(num2.length());
+						ds.send(dpSender);
+
+						ds.receive(dpReciver);
+						System.out.println("Server: "+new String(dpReciver.getData(),0,dpReciver.getLength()));
+						scanner.nextLine();
+					} else if (message.equals("!q")) {
+						flag = 2;
+					} else {
+						dpSender.setData(message.getBytes());
+						dpSender.setLength(message.length());
+						ds.send(dpSender);
+						System.out.println();
+
+						ds.receive(dpReciver);
+						System.out.println("Server: "+new String(dpReciver.getData(),0,dpReciver.getLength()));
 					}
-				
+					System.out.println();
 				}
 				ds.close();
-		}catch(IOException e) {
-			System.out.println(e);
+			} catch(IOException e) {
+				System.out.println(e);
+			}
 		}
-	}
 		scanner.close();
 	}
 }
